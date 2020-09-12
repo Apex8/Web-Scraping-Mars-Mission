@@ -60,7 +60,7 @@ def scrape():
         image_html = browser.html
         image_soup = BeautifulSoup(image_html, 'html.parser')        
         image_link = image_soup.find('div', class_='downloads')
-        image_url = image_link.find_all('li').a['href']
+        image_url = image_link.find('li').a['href']
         
         image_dict = {}
         image_dict['title'] = title
