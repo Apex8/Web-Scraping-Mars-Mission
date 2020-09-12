@@ -11,7 +11,6 @@ mongo = PyMongo(app)
 def index():
 
     mars_dict = mongo.db.mars_dict.find_one()
-
     return render_template("index.html", mars=mars_dict)
 
 
