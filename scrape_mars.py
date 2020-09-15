@@ -4,6 +4,7 @@ import pymongo
 import requests
 from bs4 import BeautifulSoup
 from splinter import Browser
+import time
 
 def init_browser():
     executable_path = {"executable_path": "chromedriver.exe"}
@@ -15,7 +16,8 @@ def scrape():
 
     news_url = "https://mars.nasa.gov/news/"
     browser.visit(news_url)
- 
+    time.sleep(2)
+
     html = browser.html
     soup = BeautifulSoup(html, 'html.parser')
     slide_elem = soup.select_one("ul.item_list li.slide")
@@ -25,6 +27,8 @@ def scrape():
     
     image_url = 'https://www.jpl.nasa.gov/spaceimages/?search=&category=Mars'
     browser.visit(image_url)
+    time.sleep(2)
+
     browser.find_by_id('full_image').click()
     browser.find_link_by_partial_text('more info').click()
     img_soup = BeautifulSoup(browser.html,'html.parser')
@@ -43,6 +47,8 @@ def scrape():
     
     hemispheres_url = 'https://astrogeology.usgs.gov/search/results?q=hemisphere+enhanced&k1=target&v1=Mars'
     browser.visit(hemispheres_url)
+    time.sleep(2)
+    
     hemispheres_html = browser.html
     hemispheres_soup = BeautifulSoup(hemispheres_html, 'html.parser')
     
@@ -56,17 +62,19 @@ def scrape():
         title = hemisphere.h3.text        
         
         hemisphere_link = hemisphere.a["href"]    
-        browser.visit(hemispheres_url)        
+        browser.visit(hemispheres_url)   
+        time.sleep(2)     
+
         image_html = browser.html
         image_soup = BeautifulSoup(image_html, 'html.parser')        
         image_link = image_soup.find('div', class_='downloads')
-        image_url = image_link.find('li').a['href']
+        image_url = image_link.find('ul li a', text='Sample').get('href')
         
         image_dict = {}
         image_dict['title'] = title
         image_dict['img_url'] = image_url        
         hemisphere_image_urls.append(image_dict)
-
+        browser.back()
    
     mars_dict = {
         "news_title": news_title,
